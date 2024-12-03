@@ -2,7 +2,7 @@ use core::panic;
 use std::io::BufRead;
 
 fn main() {
-    let f = match std::fs::File::open("day_2/input.txt") {
+    let f = match std::fs::File::open("input.txt") {
         Ok(f) => f,
         Err(err) => panic!("Problem opening input file: {err:?}"),
     };
