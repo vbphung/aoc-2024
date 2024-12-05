@@ -1,3 +1,4 @@
+#include <bitset>
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
@@ -5,14 +6,15 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
-bool ok(const std::vector<std::unordered_set<int>> &rules,
+#define N 100
+
+bool ok(const std::vector<std::bitset<N>> &rules,
 		const std::vector<int> &update) {
 	for (int i = 1; i < update.size(); i++) {
 		for (int j = 0; j < i; j++) {
-			if (rules[update[i]].find(update[j]) != rules[update[i]].end()) {
+			if (rules[update[i]].test(update[j])) {
 				return false;
 			}
 		}
@@ -21,14 +23,14 @@ bool ok(const std::vector<std::unordered_set<int>> &rules,
 	return true;
 }
 
-std::vector<int> fix(const std::vector<std::unordered_set<int>> &rules,
+std::vector<int> fix(const std::vector<std::bitset<N>> &rules,
 					 const std::vector<int> &update) {
 	std::vector<int> fixed = update;
 
 	for (int i = 1; i < fixed.size(); i++) {
 		int j = i;
 		for (int k = i - 1; k >= 0; k--) {
-			if (rules[fixed[j]].find(fixed[k]) != rules[fixed[j]].end()) {
+			if (rules[fixed[j]].test(fixed[k])) {
 				std::swap(fixed[j], fixed[k]);
 				j = k;
 			}
@@ -43,7 +45,7 @@ int main() {
 	std::string ln;
 	long part1 = 0, part2 = 0;
 
-	std::vector<std::unordered_set<int>> rules(100, std::unordered_set<int>());
+	std::vector<std::bitset<N>> rules(N, std::bitset<N>());
 	while (std::getline(f, ln)) {
 		if (ln.empty()) {
 			break;
@@ -51,7 +53,7 @@ int main() {
 
 		int u = std::stoi(ln.substr(0, 2));
 		int v = std::stoi(ln.substr(3));
-		rules[u].insert(v);
+		rules[u].set(v);
 	}
 
 	while (std::getline(f, ln)) {
