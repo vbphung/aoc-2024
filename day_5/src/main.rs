@@ -1,8 +1,11 @@
 use bit_set::BitSet;
+use recur_topo::recur_topo;
 use std::{
     collections::{HashMap, HashSet, VecDeque},
     io::BufRead,
 };
+
+mod recur_topo;
 
 const N: usize = 100;
 
@@ -17,6 +20,7 @@ fn main() {
 
     let mut part_1 = 0;
     let mut part_2 = 0;
+    let mut part_2_recur = 0;
 
     let mut dag = vec![HashSet::<usize>::new(); N];
 
@@ -39,6 +43,9 @@ fn main() {
         } else {
             let ins = topo(&dag, &order);
             part_2 += ins[ins.len() / 2];
+
+            let ins = recur_topo(&dag, &order, N);
+            part_2_recur += ins[ins.len() / 2];
         }
 
         i += 1;
@@ -46,6 +53,8 @@ fn main() {
 
     println!("{}", part_1);
     println!("{}", part_2);
+
+    assert!(part_2_recur == part_2);
 }
 
 fn follows_rules(dag: &[HashSet<usize>], order: &[usize]) -> bool {
