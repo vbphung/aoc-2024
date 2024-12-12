@@ -1,6 +1,7 @@
 [package]
-name = "day_7"
+name = "day_05"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bit-set = "0.8.0"
