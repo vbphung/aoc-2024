@@ -67,7 +67,7 @@ fn reverse_engine(program: &Vec<i32>, ans: u64, cur: i32) -> u64 {
     0
 }
 
-fn run_program(a: i32, b: i32, c: i32, opcodes: &Vec<Vec<i32>>) -> String {
+fn run_program(a: i32, b: i32, c: i32, opcodes: &[Vec<i32>]) -> String {
     let mut ip = 0;
 
     let mut a = a;
@@ -81,7 +81,7 @@ fn run_program(a: i32, b: i32, c: i32, opcodes: &Vec<Vec<i32>>) -> String {
         let combo = get_combo_operand(a, b, c, op[1]) as u32;
         match op[0] {
             0 => {
-                a = a / i32::pow(2, combo);
+                a /= i32::pow(2, combo);
             }
             1 => {
                 b ^= op[1];
@@ -93,7 +93,7 @@ fn run_program(a: i32, b: i32, c: i32, opcodes: &Vec<Vec<i32>>) -> String {
                 ip = if a != 0 { op[1] as usize } else { ip + 1 };
             }
             4 => {
-                b = b ^ c;
+                b ^= c;
             }
             5 => {
                 let out = combo % 8;
