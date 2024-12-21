@@ -13,22 +13,58 @@ fn main() {
     let b: i32 = lns[1].split(' ').collect::<Vec<&str>>()[2].parse().unwrap();
     let c: i32 = lns[2].split(' ').collect::<Vec<&str>>()[2].parse().unwrap();
 
-    let opcodes = lns[4].split(' ').collect::<Vec<&str>>()[1]
+    let program = lns[4].split(' ').collect::<Vec<&str>>()[1]
         .split(',')
         .collect::<Vec<&str>>()
         .iter()
         .map(|x| x.parse().unwrap())
-        .collect::<Vec<i32>>()
+        .collect::<Vec<i32>>();
+    let opcodes = program
         .chunks(2)
         .map(|x| x.to_vec())
         .collect::<Vec<Vec<i32>>>();
 
     println!("Registers: a({a}) b({b}) c({c})");
+    println!("Program: {:?}", program);
     println!("Opcodes: {:?}", opcodes);
 
     let part_1 = run_program(a, b, c, &opcodes);
+    let part_2 = reverse_engine(&program, 0, program.len() as i32 - 1);
 
     println!("{}", part_1);
+    println!("{}", part_2);
+}
+
+// Shout out to this explanation https://youtu.be/y-UPxMAh2N8?si=1Mh3cPIErBZcY7Zv
+// which saved my brain from melting
+fn reverse_engine(program: &Vec<i32>, ans: u64, cur: i32) -> u64 {
+    if cur < 0 {
+        return ans;
+    }
+
+    let cur = cur as usize;
+
+    for b in 0..8 {
+        let a = (ans << 3) + b;
+        let b = b ^ 5;
+        let c = a >> b;
+        let b = b ^ 6;
+
+        // My program has (0, 3) opcode here
+        // let a = a >> 3;
+        // But we mustn't decrease `a` here
+        // because we're backtracking its value
+
+        let b = b ^ c;
+        if (b % 8) as i32 == program[cur] {
+            let sub = reverse_engine(program, a, cur as i32 - 1);
+            if sub != 0 {
+                return sub;
+            }
+        }
+    }
+
+    0
 }
 
 fn run_program(a: i32, b: i32, c: i32, opcodes: &Vec<Vec<i32>>) -> String {
