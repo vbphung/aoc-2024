@@ -104,6 +104,7 @@ int main(int argc, char *argv[]) {
 		std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
 	printf("%ld microseconds\n", dur.count());
+
 	printf("%lld\n", part_1);
 	printf("%d,%d\n", part_2[1], part_2[0]);
 
