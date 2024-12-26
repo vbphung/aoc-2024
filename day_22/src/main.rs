@@ -51,7 +51,7 @@ fn buyer_seqs(all_seqs: &mut HashMap<i32, i32>, prices: &[i32], changes: &[i32],
     for i in 3..k {
         let h = hash_seq(&seq);
         if !seen.contains(&h) {
-            *all_seqs.entry(h.clone()).or_insert(0) += prices[i];
+            *all_seqs.entry(h).or_insert(0) += prices[i];
             seen.insert(h);
         }
 
