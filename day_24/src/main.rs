@@ -1,5 +1,7 @@
 use std::{collections::HashMap, io::BufRead};
 
+mod fix_adding;
+
 struct Operation {
     pub op: String,
     pub a: String,
@@ -44,6 +46,7 @@ fn main() {
     let t = std::time::Instant::now();
 
     let part_1 = output_from_zs(&mut vals, &ops);
+    verify_adds(&ops);
 
     let dur = t.elapsed();
 
@@ -51,15 +54,22 @@ fn main() {
     println!("Took {:?}ms", dur.as_millis());
 }
 
-fn output_from_zs(vals: &mut HashMap<String, i32>, ops: &HashMap<String, Operation>) -> u64 {
-    let mut most_z: String = String::new();
-    for (var, _) in ops.iter() {
-        most_z = most_z.max(var.clone());
+fn verify_adds(ops: &HashMap<String, Operation>) {
+    let most_bit = most_significant_bit(ops);
+    for b in 0..most_bit {
+        let z = format!("z{:02}", b);
+        if !fix_adding::verify_z(ops, z.clone(), b) {
+            println!("{:?} INVALID", z);
+        } else {
+            println!("{:?} VALID", z);
+        }
     }
+}
 
+fn output_from_zs(vals: &mut HashMap<String, i32>, ops: &HashMap<String, Operation>) -> u64 {
     let mut ans: u64 = 0;
 
-    let most_bit: i32 = most_z[1..].parse().unwrap();
+    let most_bit = most_significant_bit(ops);
     for b in (0..=most_bit).rev() {
         let z = format!("z{:02}", b);
         let val = get_val(vals, ops, z);
@@ -88,4 +98,13 @@ fn get_val(vals: &mut HashMap<String, i32>, ops: &HashMap<String, Operation>, va
     );
 
     *vals.get(&var).unwrap()
+}
+
+fn most_significant_bit(ops: &HashMap<String, Operation>) -> u32 {
+    let mut most_z: String = String::new();
+    for (var, _) in ops.iter() {
+        most_z = most_z.max(var.clone());
+    }
+
+    most_z[1..].parse().unwrap()
 }
